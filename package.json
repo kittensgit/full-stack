@@ -5,7 +5,8 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "node index.js",
+        "start:dev": "nodemon index.js"
     },
     "repository": {
         "type": "git",
@@ -18,6 +19,7 @@
     },
     "homepage": "https://github.com/kittensgit/full-stack#readme",
     "dependencies": {
-        "express": "^4.18.2"
+        "express": "^4.18.2",
+        "nodemon": "^3.0.1"
     }
 }
