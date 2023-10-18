@@ -1,5 +1,17 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+
+mongoose
+    .connect(
+        'mongodb+srv://nika:222222@cluster0.1vzxdh1.mongodb.net/?retryWrites=true&w=majority'
+    )
+    .then(() => {
+        console.log('db ok');
+    })
+    .catch((err) => {
+        console.log('db error', err);
+    });
 
 const app = express(); // создвем експресс приложение
 
