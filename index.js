@@ -3,12 +3,12 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
-import { registerValidator } from './validations/auth.js';
+import { registerValidation } from './validations/auth.js';
 import UserModel from './models/user.js';
 
 mongoose
     .connect(
-        'mongodb+srv://nika:222222@cluster0.1vzxdh1.mongodb.net/?retryWrites=true&w=majority'
+        'mongodb+srv://nika:222222@cluster0.1vzxdh1.mongodb.net/blog?retryWrites=true&w=majority'
     )
     .then(() => {
         console.log('db ok');
@@ -21,7 +21,7 @@ const app = express(); // создвем експресс приложение
 
 app.use(express.json());
 
-app.post('/auth/register', registerValidator, async (req, res) => {
+app.post('/auth/register', registerValidation, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array());
