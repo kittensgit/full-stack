@@ -22,24 +22,31 @@ const app = express(); // создвем експресс приложение
 app.use(express.json());
 
 app.post('/auth/register', registerValidation, async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json(errors.array());
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json(errors.array());
+        }
+
+        const password = req.body.password;
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(password, salt);
+
+        const doc = new UserModel({
+            email: req.body.email,
+            fullName: req.body.fullName,
+            passwordHash,
+        });
+
+        const user = await doc.save();
+
+        res.json(user);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Failed to register',
+        });
     }
-
-    const password = req.body.password;
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt);
-
-    const doc = new UserModel({
-        email: req.body.email,
-        fullName: req.body.fullName,
-        passwordHash,
-    });
-
-    const user = await doc.save();
-
-    res.json(user);
 });
 
 app.listen(2222, (err) => {
