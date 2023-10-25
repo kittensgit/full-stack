@@ -21,6 +21,51 @@ const app = express(); // создвем експресс приложение
 
 app.use(express.json());
 
+app.post('/auth/login', async (req, res) => {
+    try {
+        const user = await UserModel.findOne({
+            email: req.body.email,
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        const validPass = await bcrypt.compare(
+            req.body.password,
+            user._doc.passwordHash
+        );
+
+        if (!validPass) {
+            return res.status(400).json({
+                message: 'invalid password or login',
+            });
+        }
+
+        const token = jwt.sign(
+            {
+                _id: user._id,
+            },
+            'secret123',
+            { expiresIn: '30d' }
+        );
+
+        const { passwordHash, ...userData } = user._doc;
+
+        res.json({
+            userData,
+            token,
+        });
+    } catch (error) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Failed to login',
+        });
+    }
+});
+
 app.post('/auth/register', registerValidation, async (req, res) => {
     try {
         const errors = validationResult(req);
