@@ -6,10 +6,8 @@ import {
     loginValidation,
     postCreateValidation,
 } from './validations.js';
-import checkAuth from './utils/checkAuth.js';
-import * as UserController from './controller/UserController.js';
-import * as PostController from './controller/PostController.js';
-import handleValiodationErrors from './utils/handleValiodationErrors.js';
+import { checkAuth, handleValidationErrors } from './utils/index.js';
+import { PostController, UserController } from './controllers/index.js';
 
 mongoose
     .connect(
@@ -41,13 +39,13 @@ app.use('/uploads', express.static('uploads'));
 app.post(
     '/auth/login',
     loginValidation,
-    handleValiodationErrors,
+    handleValidationErrors,
     UserController.login
 );
 app.post(
     '/auth/register',
     registerValidation,
-    handleValiodationErrors,
+    handleValidationErrors,
     UserController.register
 );
 app.get('/auth/me', checkAuth, UserController.getMe);
@@ -64,7 +62,7 @@ app.post(
     '/posts',
     checkAuth,
     postCreateValidation,
-    handleValiodationErrors,
+    handleValidationErrors,
     PostController.create
 );
 app.delete('/posts/:id', checkAuth, PostController.remove);
@@ -72,7 +70,7 @@ app.patch(
     '/posts/:id',
     checkAuth,
     postCreateValidation,
-    handleValiodationErrors,
+    handleValidationErrors,
     PostController.update
 );
 
