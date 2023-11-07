@@ -20,7 +20,10 @@ export const getLastTags = async (req, res) => {
 
 export const getAll = async (req, res) => {
     try {
-        const posts = await PostModel.find().populate('user').exec();
+        const posts = await PostModel.find()
+            .populate('user')
+            .sort({ createdAt: -1 })
+            .exec();
 
         res.json(posts);
     } catch (error) {
@@ -30,6 +33,22 @@ export const getAll = async (req, res) => {
         });
     }
 };
+export const getPopular = async (req, res) => {
+    try {
+        const posts = await PostModel.find()
+            .populate('user')
+            .sort({ viewsCount: -1 })
+            .exec();
+
+        res.json(posts);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Failed to get all articles',
+        });
+    }
+};
+
 export const getOne = async (req, res) => {
     try {
         const postId = req.params.id;
