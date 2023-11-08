@@ -17,6 +17,22 @@ export const getLastTags = async (req, res) => {
         });
     }
 };
+export const getPostByTag = async (req, res) => {
+    try {
+        const posts = await PostModel.find({
+            tags: { $in: [req.params.tag] },
+        })
+            .populate('user')
+            .exec();
+
+        res.json(posts);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Failed to get posts by tag',
+        });
+    }
+};
 
 export const getAll = async (req, res) => {
     try {
@@ -44,7 +60,7 @@ export const getPopular = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: 'Failed to get all articles',
+            message: 'Failed to get popular articles',
         });
     }
 };
