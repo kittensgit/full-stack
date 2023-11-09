@@ -161,18 +161,25 @@ export const update = async (req, res) => {
         });
     }
 };
+
 export const addComment = async (req, res) => {
     try {
         const postId = req.params.id;
+        const userId = req.body.user;
 
         const updatedPost = await PostModel.findOneAndUpdate(
             { _id: postId },
             {
-                $push: { comments: req.body.comment },
+                $push: {
+                    comments: {
+                        text: req.body.text,
+                        user: userId,
+                    },
+                },
                 $inc: { commentCount: 1 },
             },
-            { returnDocument: 'after' }
-        );
+            { new: true }
+        ).populate('comments.user');
 
         if (!updatedPost) {
             return res.status(404).json({
@@ -182,11 +189,35 @@ export const addComment = async (req, res) => {
 
         res.json({
             success: true,
+            updatedPost,
         });
     } catch (error) {
         console.log(error);
         res.status(500).json({
             message: 'Failed to add comment',
+        });
+    }
+};
+
+export const getComments = async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        const post = await PostModel.findById(postId).populate('comments.user');
+
+        if (!post) {
+            return res.status(404).json({
+                message: 'Article not found',
+            });
+        }
+
+        res.json({
+            comments: post.comments,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Failed to get comments',
         });
     }
 };
