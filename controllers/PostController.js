@@ -161,3 +161,32 @@ export const update = async (req, res) => {
         });
     }
 };
+export const addComment = async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        const updatedPost = await PostModel.findOneAndUpdate(
+            { _id: postId },
+            {
+                $push: { comments: req.body.comment },
+                $inc: { commentCount: 1 },
+            },
+            { returnDocument: 'after' }
+        );
+
+        if (!updatedPost) {
+            return res.status(404).json({
+                message: 'Article not found',
+            });
+        }
+
+        res.json({
+            success: true,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Failed to add comment',
+        });
+    }
+};
