@@ -17,6 +17,27 @@ export const getLastTags = async (req, res) => {
         });
     }
 };
+export const getLastComments = async (req, res) => {
+    try {
+        const posts = await PostModel.find()
+            .sort({ createdAt: -1 })
+            .limit(2)
+            .populate('comments.user')
+            .exec();
+
+        const comments = posts
+            .map((obj) => obj.comments)
+            .flat()
+            .slice(0, 2);
+
+        res.json(comments);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Failed to get comments',
+        });
+    }
+};
 export const getPostByTag = async (req, res) => {
     try {
         const posts = await PostModel.find({
