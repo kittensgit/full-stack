@@ -12,7 +12,7 @@ export const registerValidation = [
         min: 5,
     }),
     body('fullName', 'Enter your name').isLength({ min: 2 }),
-    body('avatarUrl', 'Invalid link to avatar').optional().isURL(),
+    body('avatarUrl', 'Invalid link to avatar').optional(),
 ];
 export const postCreateValidation = [
     body('title', 'Enter article title').isLength({ min: 2 }).isString(),
